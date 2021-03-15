@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AiArthy Canvas</title>
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.js"></script>
+    <script src="../js/common.js"></script>
+</head>
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content" style="padding: 5%;">
+        <div class="my-2">
+            <div class="m-2 bold title3">빗속 사람 그리기</div>
+            <div class="m-3 body3">비가 내리고 있습니다. 빗속에 있는 사람을 그려 주세요.<br>옳고 그른 답이 있는 것이 아니므로, 자유롭게 표현하시면 됩니다.<br>사람은 막대기 형태나 만화와 같은 모습의 사람이 아닌,<br>완전한 사람의 형태로 그려 주시기 바랍니다.</div>
+            <button class="m-2 button1" id="ok">확인</button>
+        </div>
+        <div class="my-3">
+            <div class="m-2 body3">이미 그림이 존재하나요?</div>
+            <form id="form" class="m-3" action="uploadForm" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" accept="image/*">
+                <input type="submit">
+            </form>
+        </div>
+    </div>
+</div>
+
+<body onload="init()">
+    <div class="setting col-lg-3 col-md-12" style="float: left;">
+        <a class="title2" href="index.html" target="_top" style="text-decoration: none;">AiArthy</a>
+        <div class="slidecontainer">
+            <div class="body2">펜</div>
+            <input id="pen_width" type="range" min="1" max="9" value="5" class="slider" onchange="change_width(this.value)">
+        </div>
+        <div class="slidecontainer">
+            <div class="body2">지우개</div>
+            <input id="erase_width" type="range" min="1" max="9" value="5" class="slider" onchange="change_width(this.value)">
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;">
+            <div style="display: inline;">
+                <a id="black" class="left fa" onclick="color(this.id)"><i class="fa fa-pencil fa-3x" aria-hidden="true"></i></a>
+                <a id="white" class="right fa" onclick="color(this.id)"><i class="fa fa-eraser fa-3x" aria-hidden="true"></i></a>
+            </div>
+            <div style="display: inline;">
+                <button class="left button1" onclick="submit()">제출하기</button>
+                <button class="right button2" onclick="eraseAll()">초기화</button>
+            </div>
+        </div>
+    </div>
+    <div class="canvas col-lg-9 col-md-12" style="float: left;">
+        <canvas id="canvas"></canvas>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript">
+var modal = document.getElementById("myModal");
+
+$(document).ready(function() {
+    modal.style.display = "block";
+});
+
+document.getElementById("ok").onclick = function() {
+    modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+<script type="text/javascript">
+var canvas, ctx, flag = false,
+    prevX = 0,
+    currX = 0,
+    prevY = 0,
+    currY = 0,
+    dot_flag = false;
+
+var x = "black",
+    y = 2;
+
+function init() {
+    canvas = document.getElementById('canvas');
+    ctx = canvas.getContext("2d");
+    w = canvas.width;
+    h = canvas.height;
+
+    canvas.addEventListener("mousemove", function(e) {
+        findxy('move', e)
+    }, false);
+    canvas.addEventListener("mousedown", function(e) {
+        findxy('down', e)
+    }, false);
+    canvas.addEventListener("mouseup", function(e) {
+        findxy('up', e)
+    }, false);
+    canvas.addEventListener("mouseout", function(e) {
+        findxy('out', e)
+    }, false);
+}
+
+function color(color) {
+    x = color;
+}
+
+function change_width(width) {
+    y = width;
+}
+
+function draw() {
+    console.log("draw");
+    ctx.beginPath();
+    ctx.moveTo(prevX, prevY);
+    ctx.lineTo(currX, currY);
+    ctx.strokeStyle = x;
+    ctx.lineWidth = y;
+    ctx.stroke();
+    ctx.closePath();
+}
+
+function findxy(res, e) {
+    canvas = document.getElementById("canvas");
+    var rect = canvas.getBoundingClientRect();
+    if (res == 'down') {
+        prevX = currX;
+        prevY = currY;
+        currX = (e.clientX - rect.left) / (rect.right - rect.left) * canvas.width;
+        currY = (e.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height;
+
+        flag = true;
+        dot_flag = true;
+        if (dot_flag) {
+            ctx.beginPath();
+            ctx.fillStyle = x;
+            ctx.fillRect(currX, currY, 2, 2);
+            ctx.closePath();
+            dot_flag = false;
+        }
+    }
+    if (res == 'up' || res == "out") {
+        flag = false;
+    }
+    if (res == 'move') {
+        if (flag) {
+            prevX = currX;
+            prevY = currY;
+            currX = (e.clientX - rect.left) / (rect.right - rect.left) * canvas.width;
+            currY = (e.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height;
+            draw();
+        }
+    }
+}
+
+function eraseAll() {
+    if (confirm("초기화 하시겠습니까?")) {
+        var ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, w, h);
+    }
+}
+
+function submit() {
+    var dataURL = canvas.toDataURL();
+}
+</script>
