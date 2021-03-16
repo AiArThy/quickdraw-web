@@ -22,7 +22,7 @@
         </div>
         <div class="my-3">
             <div class="m-2 body3">이미 그림이 존재하나요?</div>
-            <form id="form" class="m-3" action="uploadForm" method="post" enctype="multipart/form-data">
+            <form id="form" class="m-3" action="result.html" method="post" enctype="multipart/form-data">
                 <input type="file" name="file" accept="image/*">
                 <input type="submit">
             </form>
@@ -30,9 +30,9 @@
     </div>
 </div>
 
-<body onload="init()">
+<body class="container" onload="init()">
+    <header id="header"></header>
     <div class="setting col-lg-3 col-md-12" style="float: left;">
-        <a class="title2" href="index.html" target="_top" style="text-decoration: none;">AiArthy</a>
         <div class="slidecontainer">
             <div class="body2">펜</div>
             <input id="pen_width" type="range" min="1" max="9" value="5" class="slider" onchange="change_width(this.value)">
@@ -74,6 +74,11 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
+</script>
+<script type="text/javascript">
+$(window).on('load resize', function() {
+    document.getElementById("about").style.display = "none";
+});
 </script>
 <script type="text/javascript">
 var canvas, ctx, flag = false,
@@ -167,5 +172,6 @@ function eraseAll() {
 
 function submit() {
     var dataURL = canvas.toDataURL();
+    location.href='result.html';
 }
 </script>
