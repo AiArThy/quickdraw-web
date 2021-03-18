@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AiArthy 메인</title>
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.js"></script>
+    <script src="../js/common.js"></script>
+</head>
+
+<body>
+    <header id="header"></header>
+    <div class="container d-lg-flex">
+        <div class="col-lg-5" style="margin: auto 0;">
+            <div class="row">
+                <div>
+                    <div class="mb-4 mt-11">
+                        <div class="title1">AiArthy</div>
+                        <div class="body2">인공지능이 진단하는 그림심리검사</div>
+                    </div>
+                    <button class="button1" onclick="location.href='canvas.html'" target="_top">시작하기</button>
+                </div>
+            </div>
+        </div>
+        <figure class="col-lg-6 d-none d-lg-block " style="margin-top: 3%; margin-left: auto;">
+            <image class="image" src="../img/main.jpeg"></image>
+        </figure>
+    </div>
+    <footer id="footer"></footer>
+</body>
+
+</html>
+<script type="text/javascript">
+$(window).on('load resize', function() {
+    document.getElementById("main").style.display = "none";
+});
+</script>
