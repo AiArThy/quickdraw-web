@@ -7,14 +7,13 @@
     <title>AiArthy 메인</title>
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='common.css')}}">
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.js"></script>
-    <script src="../js/common.js"></script>
 </head>
 
 <body>
-    <header id="header"></header>
+    <header id="header">{% include 'header_about.html' %}</header>
     <div class="container d-lg-flex">
         <div class="col-lg-5" style="margin: auto 0;">
             <div class="row">
@@ -23,20 +22,17 @@
                         <div class="title1">AiArthy</div>
                         <div class="body2">인공지능이 진단하는 그림심리검사</div>
                     </div>
-                    <button class="button1" onclick="location.href='canvas.html'" target="_top">시작하기</button>
+                    <button class="button1" onclick="location.href='/canvas'" target="_top">시작하기</button>
                 </div>
             </div>
         </div>
         <figure class="col-lg-7 d-none d-lg-block " style="margin-top: 3%; margin-left: auto;">
-            <image class="image" src="../img/main2.png"></image>
+            <image class="image" src="{{url_for('static', filename='main2.png')}}"></image>
         </figure>
     </div>
-    <footer id="footer"></footer>
+    <footer id="footer">{% include 'footer.html' %}</footer>
+    
 </body>
 
 </html>
-<script type="text/javascript">
-$(window).on('load resize', function() {
-    document.getElementById("main").style.display = "none";
-});
-</script>
+

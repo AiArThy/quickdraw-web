@@ -7,10 +7,9 @@
     <title>AiArthy 진단결과</title>
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='common.css')}}">
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.js"></script>
-    <script src="../js/common.js"></script>
 </head>
 
 <body onload="myFunction()">
@@ -20,26 +19,21 @@
         <div id="loader"></div>
     </div>
     <div style="display:none;" id="myDiv">
-        <header id="header"></header>
+        <header id="header">{% include 'header_close.html' %}</header>
         <div class="container animate-bottom" style="text-align: center;">
             <div class="title2 mx-md-auto mb-4 mb-md-9">진단결과</div>
             <div class="body3">
-                Some text in my newly loaded page..
+                {{result}}
             </div>
             <div style="display: inline;">
                 <button class="left button1" onclick="share()">공유하기</button>
-                <button class="right button2" onclick="location.href='canvas.html'">다시하기</button>
+                <button class="right button2" onclick="location.href='/canvas'">다시하기</button>
             </div>
         </div>
-        <footer id="footer"></footer>
+        <footer id="footer">{% include 'footer.html' %}</footer>
     </div>
 
 </html>
-<script type="text/javascript">
-$(window).on('load resize', function() {
-    document.getElementById("about").style.display = "none";
-});
-</script>
 <script>
 var myVar;
 

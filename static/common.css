@@ -57,7 +57,7 @@
 }
 
 .button1 {
-    width: 120px;
+    width: 90px;
     height: 40px;
     background-color: #696969;
     color: #ffffff;
@@ -68,7 +68,7 @@
 }
 
 .button2 {
-    width: 120px;
+    width: 90px;
     height: 40px;
     background-color: #ffffff;
     color: #696969;
@@ -105,7 +105,7 @@ body {
 
 #canvas {
     width: 100%;
-    height: 700px;
+    height: 600px;
     margin-top: 30px;
     margin-bottom: 30px;
     position: relative;
