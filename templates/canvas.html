@@ -84,13 +84,15 @@ var canvas, ctx, flag = false,
 
 var tool = 0,
     pen_width = 2;
-erase_width = 4;
+    erase_width = 4;
 
 function init() {
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext("2d");
     w = canvas.width;
     h = canvas.height;
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, w, h);
 
     canvas.addEventListener("mousemove", function(e) {
         findxy('move', e)
@@ -119,7 +121,6 @@ function change_erase_width(width) {
 }
 
 function draw() {
-    console.log("draw");
     ctx.beginPath();
     ctx.moveTo(prevX, prevY);
     ctx.lineTo(currX, currY);
@@ -174,19 +175,25 @@ function findxy(res, e) {
 function eraseAll() {
     if (confirm("초기화 하시겠습니까?")) {
         var ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, w, h);
+        // ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, w, h);
     }
 }
 
 function submit() {
     canvas = document.getElementById("canvas");
-    var dataurl = canvas.toDataURL();
+    var dataurl = canvas.toDataURL("image/jpeg", 1.0);
+
     var blobBin = atob(dataurl.split(',')[1]); // base64 데이터 디코딩
+
     var array = [];
     for (var i = 0; i < blobBin.length; i++) {
         array.push(blobBin.charCodeAt(i));
     }
+
     var file = new Blob([new Uint8Array(array)], { type: 'image/png' }); // Blob 생성
+
     var formdata = new FormData(); // formData 생성
     formdata.append("file", file); // file data 추가
 
@@ -196,10 +203,10 @@ function submit() {
         data: formdata,
         processData: false, // data 파라미터 강제 string 변환 방지!!
         contentType: false,
-        success: function(){
+        success: function() {
             window.location.href = "analyze";
         },
-        error: function(error){
+        error: function(error) {
             console.log(error);
         }
     });
