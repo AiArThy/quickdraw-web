@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='common.css')}}">
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.js"></script>
+    <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
 </head>
 
 <body onload="myFunction()">
@@ -32,6 +33,16 @@
         </div>
         <footer id="footer">{% include 'footer.html' %}</footer>
     </div>
+    <div id="sns_modal" class="modal">
+        <div class="modal-content" style="padding: 5%;">
+            <a class="body2">SNS 공유하기</a>
+            <ul class="snsList" style="list-style:none; columns: 3; margin-left: auto; padding: 0; text-align: center;">
+                <li><a href="#" id="vIconTw" onclick="return false;" class="fa"><i class="fa fa-twitter fa-4x" aria-hidden="true"></i></a></li>
+                <li><a href="#" id="vIconFb" onclick="return false;" class="fa"><i class="fa fa-facebook fa-4x" aria-hidden="true"></i></a></li>
+                <li><a href="#" id="vIconKs" onclick="return false;" class="fa"><i class="iconify" data-icon="vs-kakaotalk" data-inline="false" style="width:50px; height:50px;"></i></a></li>
+            </ul>
+        </div>
+    </div>
 
 </html>
 <script>
@@ -44,5 +55,43 @@ function myFunction() {
 function showPage() {
     document.getElementById("loading_page").style.display = "none";
     document.getElementById("myDiv").style.display = "block";
+}
+
+var modal = document.getElementById("sns_modal");
+
+function share() {
+    modal.style.display = "block";
+}
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+$(".snsList li a").click(function() {
+    shareAct(this);
+});
+
+function shareAct(a) {
+    var snsCode = $(a).attr('id');
+    var cUrl = window.location.href;
+    switch (snsCode) {
+        case "vIconTw":
+            //트위터
+            cUrl = 'https://twitter.com/intent/tweet?text=aiarthy:&url=' + cUrl;
+            break;
+        case "vIconFb":
+            //페이스북
+            cUrl = 'http://www.facebook.com/sharer/sharer.php?u=' + cUrl;
+            break;
+        case "vIconKs":
+            //카카오스토리
+            cUrl = 'https://story.kakao.com/share?url=' + cUrl;
+            break;
+    }
+
+    window.open(cUrl, '', 'width=600,height=600,top=100,left=100,scrollbars=yes');
+
 }
 </script>
