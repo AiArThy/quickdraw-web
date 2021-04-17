@@ -23,6 +23,9 @@
         <header id="header">{% include 'header_close.html' %}</header>
         <div class="container animate-bottom" style="text-align: center;">
             <div class="title2 mx-md-auto mb-4 mb-md-9">진단결과</div>
+            <figure class="">
+                <image src="{{url_for('static', filename='drawing.png')}}" style="width:400px; height: 400px;"></image>
+            </figure>
             <div class="body3">
                 {{result}}
             </div>
