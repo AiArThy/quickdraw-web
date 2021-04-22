@@ -7,10 +7,9 @@
     <title>AiArthy Canvas</title>
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='common.css')}}">
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.js"></script>
-    <script src="../js/common.js"></script>
 </head>
 <div id="myModal" class="modal">
     <!-- Modal content -->
@@ -22,7 +21,7 @@
         </div>
         <div class="my-3">
             <div class="m-2 body3">이미 그림이 존재하나요?</div>
-            <form id="form" class="m-3" action="result.html" method="post" enctype="multipart/form-data">
+            <form class="m-3" action="http://localhost:5000/uploadFile/file" method="post" enctype="multipart/form-data">
                 <input type="file" name="file" accept="image/*">
                 <input type="submit">
             </form>
@@ -31,20 +30,22 @@
 </div>
 
 <body class="container" onload="init()">
-    <header id="header"></header>
+    <header id="header">{% include 'header_close.html' %}</header>
     <div class="setting col-lg-3 col-md-12" style="float: left;">
         <div class="slidecontainer">
             <div class="body2">펜</div>
-            <input id="pen_width" type="range" min="1" max="9" value="5" class="slider" onchange="change_width(this.value)">
+            <input id="pen_width" type="range" min="0.1" max="2.9" value="1.5" step="0.1" class="slider" onchange="change_pen_width(this.value)">
+            <div class="range-value body3" id="rangeV_pen"></div>
         </div>
         <div class="slidecontainer">
             <div class="body2">지우개</div>
-            <input id="erase_width" type="range" min="1" max="9" value="5" class="slider" onchange="change_width(this.value)">
+            <input id="erase_width" type="range" min="1" max="5" value="3" step="0.5" class="slider" onchange="change_erase_width(this.value)">
+            <div class="range-value body3" id="rangeV_erase"></div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;">
             <div style="display: inline;">
-                <a id="black" class="left fa" onclick="color(this.id)"><i class="fa fa-pencil fa-3x" aria-hidden="true"></i></a>
-                <a id="white" class="right fa" onclick="color(this.id)"><i class="fa fa-eraser fa-3x" aria-hidden="true"></i></a>
+                <a class="left fa" onclick="color(0);"><i id="pencil_icon" class="fa fa-pencil fa-3x" aria-hidden="true"></i></a>
+                <a class="right fa" onclick="color(1);"><i id="erase_icon" class="fa fa-eraser fa-3x" aria-hidden="true"></i></a>
             </div>
             <div style="display: inline;">
                 <button class="left button1" onclick="submit()">제출하기</button>
@@ -63,6 +64,7 @@ var modal = document.getElementById("myModal");
 
 $(document).ready(function() {
     modal.style.display = "block";
+    document.getElementById("pencil_icon").style = "color: black";
 });
 
 document.getElementById("ok").onclick = function() {
@@ -74,11 +76,21 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
-</script>
-<script type="text/javascript">
-$(window).on('load resize', function() {
-    document.getElementById("about").style.display = "none";
-});
+
+const
+    range_pen = document.getElementById('pen_width'),
+    rangeV_pen = document.getElementById('rangeV_pen'),
+    range_erase = document.getElementById('erase_width'),
+    rangeV_erase = document.getElementById('rangeV_erase');
+setValue = () => {
+    const newValue_pen = Number((range_pen.value - range_pen.min) * 100 / (range_pen.max - range_pen.min));
+    rangeV_pen.innerHTML = `<span>${range_pen.value}</span>`;
+    const newValue_erase = Number((range_erase.value - range_erase.min) * 100 / (range_erase.max - range_erase.min));
+    rangeV_erase.innerHTML = `<span>${range_erase.value}</span>`;
+};
+document.addEventListener("DOMContentLoaded", setValue);
+range_pen.addEventListener('input', setValue);
+range_erase.addEventListener('input', setValue);
 </script>
 <script type="text/javascript">
 var canvas, ctx, flag = false,
@@ -88,14 +100,17 @@ var canvas, ctx, flag = false,
     currY = 0,
     dot_flag = false;
 
-var x = "black",
-    y = 2;
+var tool = 0,
+    pen_width = 1.5;
+erase_width = 10;
 
 function init() {
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext("2d");
     w = canvas.width;
     h = canvas.height;
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, w, h);
 
     canvas.addEventListener("mousemove", function(e) {
         findxy('move', e)
@@ -111,21 +126,36 @@ function init() {
     }, false);
 }
 
-function color(color) {
-    x = color;
+function color(t) {
+    tool = t;
+    if (t == 0) {
+        document.getElementById("pencil_icon").style = "color: black";
+        document.getElementById("erase_icon").style = "color: #808080";
+    } else if (t == 1) {
+        document.getElementById("erase_icon").style = "color: black";
+        document.getElementById("pencil_icon").style = "color: #808080";
+    }
 }
 
-function change_width(width) {
-    y = width;
+function change_pen_width(width) {
+    pen_width = width;
+}
+
+function change_erase_width(width) {
+    erase_width = width;
 }
 
 function draw() {
-    console.log("draw");
     ctx.beginPath();
     ctx.moveTo(prevX, prevY);
     ctx.lineTo(currX, currY);
-    ctx.strokeStyle = x;
-    ctx.lineWidth = y;
+    if (tool == 0) {
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = pen_width;
+    } else {
+        ctx.strokeStyle = "white";
+        ctx.lineWidth = erase_width;
+    }
     ctx.stroke();
     ctx.closePath();
 }
@@ -143,7 +173,11 @@ function findxy(res, e) {
         dot_flag = true;
         if (dot_flag) {
             ctx.beginPath();
-            ctx.fillStyle = x;
+            if (tool == 0) {
+                ctx.fillStyle = "black";
+            } else {
+                ctx.fillStyle = "white";
+            }
             ctx.fillRect(currX, currY, 2, 2);
             ctx.closePath();
             dot_flag = false;
@@ -166,12 +200,40 @@ function findxy(res, e) {
 function eraseAll() {
     if (confirm("초기화 하시겠습니까?")) {
         var ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, w, h);
+        // ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, w, h);
     }
 }
 
 function submit() {
-    var dataURL = canvas.toDataURL();
-    location.href='result.html';
+    canvas = document.getElementById("canvas");
+    var dataurl = canvas.toDataURL("image/jpeg", 1.0);
+
+    var blobBin = atob(dataurl.split(',')[1]); // base64 데이터 디코딩
+
+    var array = [];
+    for (var i = 0; i < blobBin.length; i++) {
+        array.push(blobBin.charCodeAt(i));
+    }
+
+    var file = new Blob([new Uint8Array(array)], { type: 'image/png' }); // Blob 생성
+
+    var formdata = new FormData(); // formData 생성
+    formdata.append("file", file); // file data 추가
+
+    $.ajax({
+        type: 'post',
+        url: 'http://localhost:5000/uploadFile/canvas',
+        data: formdata,
+        processData: false, // data 파라미터 강제 string 변환 방지!!
+        contentType: false,
+        success: function() {
+            window.location.href = "analyze";
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
 }
 </script>

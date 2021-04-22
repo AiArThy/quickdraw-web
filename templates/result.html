@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AiArthy 진단결과</title>
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='common.css')}}">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.js"></script>
+    <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+</head>
+
+<body onload="myFunction()">
+    <div id="loading_page">
+        <div class="title1">AiArthy</div>
+        <div class="body2">진단 중입니다...</div>
+        <div id="loader"></div>
+    </div>
+    <div style="display:none;" id="myDiv">
+        <header id="header">{% include 'header_close.html' %}</header>
+        <div class="container animate-bottom" style="text-align: center;">
+            <div class="title2 mx-md-auto mb-4 mb-md-9">진단결과</div>
+            <figure class="">
+                <image src="{{url_for('static', filename='drawing.png')}}" style="width:400px; height: 400px;"></image>
+            </figure>
+            <div class="body3">
+                {{result}}
+            </div>
+            <div style="display: inline;">
+                <button class="left button1" onclick="share()">공유하기</button>
+                <button class="right button2" onclick="location.href='/canvas'">다시하기</button>
+            </div>
+        </div>
+        <footer id="footer">{% include 'footer.html' %}</footer>
+    </div>
+    <div id="sns_modal" class="modal">
+        <div class="modal-content" style="padding: 5%;">
+            <a class="body2">SNS 공유하기</a>
+            <ul class="snsList" style="list-style:none; columns: 3; margin-left: auto; padding: 0; text-align: center;">
+                <li><a href="#" id="vIconTw" onclick="return false;" class="fa"><i class="fa fa-twitter fa-4x" aria-hidden="true"></i></a></li>
+                <li><a href="#" id="vIconFb" onclick="return false;" class="fa"><i class="fa fa-facebook fa-4x" aria-hidden="true"></i></a></li>
+                <li><a href="#" id="vIconKs" onclick="return false;" class="fa"><i class="iconify" data-icon="vs-kakaotalk" data-inline="false" style="width:50px; height:50px;"></i></a></li>
+            </ul>
+        </div>
+    </div>
+
+</html>
+<script>
+var myVar;
+
+function myFunction() {
+    myVar = setTimeout(showPage, 3000);
+}
+
+function showPage() {
+    document.getElementById("loading_page").style.display = "none";
+    document.getElementById("myDiv").style.display = "block";
+}
+
+var modal = document.getElementById("sns_modal");
+
+function share() {
+    modal.style.display = "block";
+}
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+$(".snsList li a").click(function() {
+    shareAct(this);
+});
+
+function shareAct(a) {
+    var snsCode = $(a).attr('id');
+    var cUrl = window.location.href;
+    switch (snsCode) {
+        case "vIconTw":
+            //트위터
+            cUrl = 'https://twitter.com/intent/tweet?text=aiarthy:&url=' + cUrl;
+            break;
+        case "vIconFb":
+            //페이스북
+            cUrl = 'http://www.facebook.com/sharer/sharer.php?u=' + cUrl;
+            break;
+        case "vIconKs":
+            //카카오스토리
+            cUrl = 'https://story.kakao.com/share?url=' + cUrl;
+            break;
+    }
+
+    window.open(cUrl, '', 'width=600,height=600,top=100,left=100,scrollbars=yes');
+
+}
+</script>

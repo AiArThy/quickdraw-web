@@ -7,14 +7,13 @@
     <title>AiArthy란?</title>
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="../css/common.css">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='common.css')}}">
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.js"></script>
-    <script src="../js/common.js"></script>
 </head>
 
 <body>
-    <header id="header"></header>
+    <header id="header">{% include 'header_close.html' %}</header>
     <div class="container d-lg-flex">
         <div class="container ">
             <div class="title2 text-center mx-md-auto mb-4 mb-md-9">AI Art Therapy</div>
@@ -45,7 +44,7 @@
             <hr>
             <div class="row justify-content-lg-between">
                 <figure class="col-lg-6 d-none d-lg-block ">
-                    <image class="image" src="../img/dapr_test.jpeg" style="width: 400px;"></image>
+                    <image class="image" src="{{url_for('static', filename='dapr_test.jpeg')}}" style="width: 400px;"></image>
                 </figure>
                 <div class="col-lg-6 order-lg-1">
                     <div class="pt-8 pb-lg-8">
@@ -73,7 +72,7 @@
                     </div>
                 </div>
                 <figure class="col-lg-6 d-none d-lg-block ">
-                    <image class="image" src="../img/quick_draw.png" style="width: 400px;"></image>
+                    <image class="image" src="{{url_for('static', filename='quick_draw.png')}}" style="width: 400px;"></image>
                 </figure>
             </div>
         </div>
@@ -81,8 +80,3 @@
 </body>
 
 </html>
-<script type="text/javascript">
-$(window).on('load resize', function() {
-    document.getElementById("about").style.display = "none";
-});
-</script>
